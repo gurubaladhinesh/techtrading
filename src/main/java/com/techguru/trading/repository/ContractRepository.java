@@ -15,7 +15,7 @@ public interface ContractRepository extends JpaRepository<Contract, String> {
 
 	@Transactional
 	@Modifying(flushAutomatically = true, clearAutomatically = true)
-	@Query("UPDATE Contract set is_active = false where end_date < current_timestamp and is_active = true")
+	@Query("update Contract set is_active = false where end_date < current_timestamp and is_active = true")
 	public List<Contract> updateOpenContractStatus();
 	
 	public List<Contract> findByIsActiveEquals(Boolean isActive);
