@@ -1,0 +1,20 @@
+spring:
+  jpa:
+    hibernate: 
+      ddl-auto: none
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database: POSTGRESQL
+    show-sql: true
+    
+  datasource:
+    url: jdbc:postgresql://localhost:54320/techtrading
+    username: user
+    password: passw0rd
+    platform: postgres
+    initialization-mode: always
+    driver-class-name: org.postgresql.Driver
+  application:
+    name: techtrading
+    
+    
+
