@@ -48,7 +48,6 @@ public class Utils implements TechTradingConstants {
 			con.setRequestProperty("Host", INVESTING_HOST);
 			if (HttpURLConnection.HTTP_OK == con.getResponseCode()) {
 				response = readResponse(con);
-				//System.out.println("response:" + response);
 			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
