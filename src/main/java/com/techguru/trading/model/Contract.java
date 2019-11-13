@@ -1,6 +1,6 @@
 package com.techguru.trading.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,13 +37,13 @@ public class Contract {
 	private String description;
 
 	@Column(name = "start_date")
-	@JsonFormat(pattern = TechTradingConstants.DATETIME_FORMAT)
-	private LocalDateTime startDate;
+	@JsonFormat(pattern = TechTradingConstants.DATE_FORMAT)
+	private LocalDate startDate;
 
 	@NonNull
 	@Column(name = "end_date")
-	@JsonFormat(pattern = TechTradingConstants.DATETIME_FORMAT)
-	private LocalDateTime endDate;
+	@JsonFormat(pattern = TechTradingConstants.DATE_FORMAT)
+	private LocalDate endDate;
 
 	@ManyToOne
 	@JoinColumn(name = "contract_type", referencedColumnName = "id")

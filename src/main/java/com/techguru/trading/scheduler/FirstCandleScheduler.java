@@ -25,7 +25,7 @@ public class FirstCandleScheduler extends Utils {
 		this.contractService = contractService;
 	}
 
-	@Scheduled(cron = "1 6 9,17 * * MON-FRI")
+	@Scheduled(cron = "1 15 9,17 * * MON-FRI")
 	public void getFirstCandle() {
 		List<Contract> activeContracts = contractService.findActiveContracts();
 
