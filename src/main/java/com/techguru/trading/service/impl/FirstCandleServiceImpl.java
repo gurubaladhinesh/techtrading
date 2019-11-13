@@ -1,6 +1,7 @@
 package com.techguru.trading.service.impl;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,5 +32,11 @@ public class FirstCandleServiceImpl implements FirstCandleService {
 	public Boolean findIfFirstCandleExists(Contract contract, LocalDate tradeDate) {
 		return firstCandleRepository.findFirstByTradeDateEqualsAndContractIdEquals(tradeDate, contract.getId())
 				.isPresent();
+	}
+
+	@Override
+	public List<FirstCandle> findTodaysFirstCandles() {
+		LocalDate todaysDate = LocalDate.now();
+		return firstCandleRepository.findByTradeDateEquals(todaysDate);
 	}
 }

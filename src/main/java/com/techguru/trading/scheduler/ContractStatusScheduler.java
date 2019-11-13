@@ -22,7 +22,7 @@ public class ContractStatusScheduler {
 		this.contractService = contractService;
 	}
 
-	@Scheduled(cron = "0 0 9 * * MON-FRI")
+	@Scheduled(cron = "0 0 6 * * MON-FRI")
 	public void updateOpenContractStatus() {
 		List<Contract> disabledOpenContracts = contractService.updateOpenContractStatus();
 		log.info("List of disabled open contracts: ", disabledOpenContracts);

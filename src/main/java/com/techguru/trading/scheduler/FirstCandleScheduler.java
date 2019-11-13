@@ -1,12 +1,14 @@
 package com.techguru.trading.scheduler;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.techguru.trading.cache.Cache;
 import com.techguru.trading.model.Contract;
 import com.techguru.trading.model.FirstCandle;
 import com.techguru.trading.service.ContractService;
@@ -28,15 +30,17 @@ public class FirstCandleScheduler extends Utils {
 	@Scheduled(cron = "1 15 9,17 * * MON-FRI")
 	public void getFirstCandle() {
 		List<Contract> activeContracts = contractService.findActiveContracts();
+		List<FirstCandle> todaysFirstCandles = new ArrayList<FirstCandle>();
 
 		activeContracts.stream().forEach((contract) -> {
 			if (!firstCandleService.findIfFirstCandleExists(contract, LocalDate.now())) {
 				FirstCandle firstCandle = getFirstCandle(contract);
 				firstCandleService.addFirstCandle(firstCandle);
+				todaysFirstCandles.add(firstCandle);
 			}
-		}
-		);
-
+		});
+		Cache.getInstance().todaysFirstCandles.clear();
+		Cache.getInstance().populateTodaysFirstCandles(todaysFirstCandles);
 	}
 
 }
