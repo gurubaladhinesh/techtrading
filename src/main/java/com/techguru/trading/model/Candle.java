@@ -1,11 +1,9 @@
 package com.techguru.trading.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,13 +26,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "entry")
+@Table(name = "candle")
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
-public class Entry {
-	
-	public enum EntryType {
-		BUY, SELL;
-	}
+public class Candle {
 
 	@Id
 	@Column(name = "id")
@@ -43,32 +37,28 @@ public class Entry {
 
 	@ManyToOne
 	@JoinColumn(name = "contract", referencedColumnName = "id")
+	@NonNull
 	private Contract contract;
 
-	@Column(name = "created_at")
-	@JsonFormat(pattern = TechTradingConstants.DATETIME_FORMAT)
-	private LocalDateTime createdAt;
-
-	@Column(name = "updated_at")
-	@JsonFormat(pattern = TechTradingConstants.DATETIME_FORMAT)
-	private LocalDateTime updatedAt;
-
-	@Column(name = "is_active")
-	private Boolean isActive;
-
-	@Column(name = "entry_value")
-	private Double entryValue;
-
-	@Column(name = "exit_value")
-	private Double exitValue;
-
-	@Column(name = "profit_offset")
 	@NonNull
-	private Double profitOffset;
-
-	@Column(name = "entry_type")
+	@Column(name = "trade_date")
+	@JsonFormat(pattern=TechTradingConstants.DATE_FORMAT)
+	private LocalDate tradeDate;
+	
+	@Column(name = "open")
 	@NonNull
-	@Enumerated(EnumType.STRING)
-	private EntryType entryType;
+	private Double open;
+
+	@Column(name = "high")
+	@NonNull
+	private Double high;
+
+	@Column(name = "low")
+	@NonNull
+	private Double low;
+	
+	@Column(name = "close")
+	@NonNull
+	private Double close;
 
 }

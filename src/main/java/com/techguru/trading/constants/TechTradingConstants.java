@@ -14,4 +14,6 @@ public interface TechTradingConstants {
 	public static final String INVESTING_HOST = "in.investing.com";
 	
 	public static final String ZONE_ID_INDIA = "Asia/Kolkata";
+	
+	public static final Double ENTRY_OFFSET = 0.1;
 }

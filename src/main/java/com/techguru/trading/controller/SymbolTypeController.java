@@ -1,5 +1,7 @@
 package com.techguru.trading.controller;
 
+import javax.mail.internet.InternetAddress;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.techguru.trading.model.SymbolType;
+import com.techguru.trading.scheduler.HeikinAshiCandleScheduler;
+import com.techguru.trading.service.EmailService;
 import com.techguru.trading.service.SymbolTypeService;
 
 import io.swagger.annotations.ApiOperation;
@@ -20,6 +24,9 @@ public class SymbolTypeController {
 	private SymbolTypeService symbolTypeService;
 
 	@Autowired
+	private HeikinAshiCandleScheduler scheduler;
+
+	@Autowired
 	public SymbolTypeController(SymbolTypeService symbolTypeService) {
 		this.symbolTypeService = symbolTypeService;
 	}
@@ -27,6 +34,7 @@ public class SymbolTypeController {
 	@ApiOperation(value = "Add a symbol type", notes = "This endpoint creates a new symbol type")
 	@PostMapping
 	public ResponseEntity<SymbolType> addSymbolType(@RequestBody SymbolType symbolType) {
+		scheduler.populateHeikinAshiCandles();
 		return new ResponseEntity<>(symbolTypeService.addSymbolType(symbolType), HttpStatus.OK);
 	}
 

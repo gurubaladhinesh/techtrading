@@ -1,6 +1,8 @@
 package com.techguru.trading.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.techguru.trading.constants.TechTradingConstants;
 import com.techguru.trading.model.Contract;
 import com.techguru.trading.model.Entry;
+import com.techguru.trading.model.Entry.EntryType;
 import com.techguru.trading.repository.ContractRepository;
 import com.techguru.trading.repository.EntryRepository;
 import com.techguru.trading.service.EntryService;
@@ -29,11 +32,32 @@ public class EntryServiceImpl implements EntryService {
 		Contract contract = contractRepository.findById(entry.getContract().getId()).orElseThrow();
 		entry.setContract(contract);
 		entry.setCreatedAt(LocalDateTime.now());
-		entry.setEntryValue(entry.getEntryValue());
-		entry.setIsActive(entry.getIsActive());
 		entry.setProfitOffset(TechTradingConstants.PROFIT_OFFSET);
 		entry.setUpdatedAt(LocalDateTime.now());
 		return entryRepository.save(entry);
+	}
+
+	@Override
+	public List<Entry> addEntry(List<Entry> entries) {
+		return entryRepository.saveAll(entries);
+	}
+
+	@Override
+	public Optional<Entry> findIfActiveEntryExists(Contract contract, EntryType entryType) {
+		return entryRepository.findFirstByContractIdEqualsAndIsActiveEqualsAndEntryTypeEquals(contract.getId(),
+				Boolean.TRUE, entryType);
+	}
+
+	@Override
+	public Optional<Entry> findLastEntry(Contract contract) {
+
+		return entryRepository.findFirstByContractIdEqualsOrderByCreatedAtDesc(contract.getId());
+
+	}
+
+	@Override
+	public List<Entry> findActiveEntries() {
+		return entryRepository.findByIsActiveEquals(Boolean.TRUE);
 	}
 
 }

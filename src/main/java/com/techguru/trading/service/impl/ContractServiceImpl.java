@@ -1,5 +1,6 @@
 package com.techguru.trading.service.impl;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,13 @@ public class ContractServiceImpl implements ContractService {
 
 	@Override
 	public List<Contract> updateOpenContractStatus() {
-		return contractRepository.updateOpenContractStatus();
+		List<Contract> expiredContracts = contractRepository.findByIsActiveEqualsAndEndDateLessThan(Boolean.TRUE,
+				LocalDate.now());
+		expiredContracts.stream().forEach((contract) -> {
+			contract.setIsActive(Boolean.FALSE);
+		});
+
+		return contractRepository.saveAll(expiredContracts);
 	}
 
 	@Override

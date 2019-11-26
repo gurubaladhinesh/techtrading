@@ -1,11 +1,21 @@
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: gurubaladhinesh@gmail.com
+    password: amazon sde1
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enabled: true
+          auth: true
   jpa:
-    hibernate: 
+    hibernate:
       ddl-auto: none
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     database: POSTGRESQL
     show-sql: true
-    
   datasource:
     url: jdbc:postgresql://localhost:54320/techtrading
     username: user
@@ -15,6 +25,3 @@ spring:
     driver-class-name: org.postgresql.Driver
   application:
     name: techtrading
-    
-    
-

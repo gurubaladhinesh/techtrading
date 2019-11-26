@@ -1,6 +1,6 @@
 package com.techguru.trading.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,9 +26,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "first_candle")
+@Table(name = "heikin_ashi_candle")
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
-public class FirstCandle {
+public class HeikinAshiCandle {
 
 	@Id
 	@Column(name = "id")
@@ -41,9 +41,13 @@ public class FirstCandle {
 	private Contract contract;
 
 	@NonNull
-	@Column(name = "trade_date")
-	@JsonFormat(pattern=TechTradingConstants.DATE_FORMAT)
-	private LocalDate tradeDate;
+	@Column(name = "trade_date_time")
+	@JsonFormat(pattern = TechTradingConstants.DATETIME_FORMAT)
+	private LocalDateTime tradeDateTime;
+
+	@Column(name = "open")
+	@NonNull
+	private Double open;
 
 	@Column(name = "high")
 	@NonNull
@@ -52,5 +56,9 @@ public class FirstCandle {
 	@Column(name = "low")
 	@NonNull
 	private Double low;
+
+	@Column(name = "close")
+	@NonNull
+	private Double close;
 
 }
