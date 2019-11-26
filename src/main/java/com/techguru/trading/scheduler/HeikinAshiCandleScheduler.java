@@ -94,15 +94,21 @@ public class HeikinAshiCandleScheduler extends Utils {
 						if ((!optionalLastEntry.isPresent()) || (optionalLastEntry.isPresent()
 								&& Boolean.FALSE.equals(optionalLastEntry.get().getIsActive())
 								&& EntryType.SELL.equals(optionalLastEntry.get().getEntryType()))) {
-							entries.add(createEntry(contract, EntryType.BUY, currentNormalCandle.getClose(),
-									roundTwoDecimalPlaces(currentNormalCandle.getClose() + PROFIT_OFFSET)));
+
+							Double entryValue = currentNormalCandle.getOpen();
+							Double exitValue = roundTwoDecimalPlaces(entryValue + PROFIT_OFFSET);
+							entries.add(createEntry(contract, EntryType.BUY, entryValue, exitValue));
+
 						}
 					} else if (close <= (firstCandle.getLow() - TechTradingConstants.ENTRY_OFFSET)) {
 						if ((!optionalLastEntry.isPresent()) || (optionalLastEntry.isPresent()
 								&& Boolean.FALSE.equals(optionalLastEntry.get().getIsActive())
 								&& EntryType.BUY.equals(optionalLastEntry.get().getEntryType()))) {
-							entries.add(createEntry(contract, EntryType.SELL, currentNormalCandle.getClose(),
-									roundTwoDecimalPlaces(currentNormalCandle.getClose() - PROFIT_OFFSET)));
+
+							Double entryValue = currentNormalCandle.getOpen();
+							Double exitValue = roundTwoDecimalPlaces(entryValue - PROFIT_OFFSET);
+							entries.add(createEntry(contract, EntryType.SELL, entryValue, exitValue));
+
 						}
 					}
 				}

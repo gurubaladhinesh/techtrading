@@ -1,7 +1,6 @@
 package com.techguru.trading.scheduler;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.techguru.trading.service.ContractService;
@@ -16,7 +15,7 @@ public class ContractStatusScheduler {
 		this.contractService = contractService;
 	}
 
-	//@Scheduled(cron = "0 48 8/16 * * MON-FRI")
+	// @Scheduled(cron = "0 48 8/16 * * MON-FRI")
 	public void updateOpenContractStatus() {
 		contractService.updateOpenContractStatus();
 	}
