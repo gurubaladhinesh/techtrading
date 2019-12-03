@@ -1,5 +1,6 @@
 package com.techguru.trading.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +16,7 @@ public interface EntryService {
 
 	public Optional<Entry> findIfActiveEntryExists(Contract contract, EntryType entryType);
 
-	public Optional<Entry> findLastEntry(Contract contract);
+	public Optional<Entry> findLastEntry(Contract contract, LocalDate date);
 	
 	public List<Entry> findActiveEntries();
 

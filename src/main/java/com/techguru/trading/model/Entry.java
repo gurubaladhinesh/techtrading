@@ -1,5 +1,6 @@
 package com.techguru.trading.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -31,7 +32,7 @@ import lombok.Setter;
 @Table(name = "entry")
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Entry {
-	
+
 	public enum EntryType {
 		BUY, SELL;
 	}
@@ -70,5 +71,10 @@ public class Entry {
 	@NonNull
 	@Enumerated(EnumType.STRING)
 	private EntryType entryType;
+
+	@NonNull
+	@Column(name = "trade_date")
+	@JsonFormat(pattern = TechTradingConstants.DATE_FORMAT)
+	private LocalDate tradeDate;
 
 }

@@ -44,36 +44,36 @@ public class HeikinAshiCandleScheduler extends Utils {
 	}
 
 	// Updates heikin ashi candle value for active contracts every 15mins
-	@Scheduled(cron = "20 0,15,30,45 9-23 ? * MON-FRI")
-	// @Scheduled(fixedRate = 9000000)
+	@Scheduled(cron = "2 0,15,30,45 9-23 ? * MON-FRI")
+	//@Scheduled(fixedRate = 9000000)
 	public void populateHeikinAshiCandles() {
 
 		List<Contract> activeContracts = contractService.findActiveContracts();
 		List<Entry> entries = new ArrayList<Entry>();
 		activeContracts.forEach((contract) -> {
 
-			JSONObject response = getInvestingApiResponse(contract);
+			JSONObject response = getKiteApiResponse(contract);
+			LocalDateTime normalCandleDateTime = getKiteLocalDateTimeFromResponse(response, 2);
+			
+			System.out.println(normalCandleDateTime);
 
-			Candle normalCandle = getCandle(response, 2);
-			LocalDateTime normalCandleDateTime = getLocalDateTimeFromResponse(response, 2);
+			Boolean heikinAshiCandleExists = heikinAshiCandleService.findIfHeikinAshiCandleExists(contract,
+					normalCandleDateTime);
 
-			HeikinAshiCandle previousHeikinAshiCandle = heikinAshiCandleService.findLastHeikinAshiCandle(contract);
+			if (!heikinAshiCandleExists) {
 
-			HeikinAshiCandle heikinAshiCandle = getHeikinAshiCandle(previousHeikinAshiCandle, normalCandle);
-			heikinAshiCandle.setTradeDateTime(normalCandleDateTime);
+				// Add Heiking Ashi Candle
+				Candle normalCandle = getKiteCandle(response, 2);
+				HeikinAshiCandle previousHeikinAshiCandle = heikinAshiCandleService.findLastHeikinAshiCandle(contract);
+				HeikinAshiCandle heikinAshiCandle = getHeikinAshiCandle(previousHeikinAshiCandle, normalCandle);
+				heikinAshiCandle.setTradeDateTime(normalCandleDateTime);
+				heikinAshiCandleService.addHeikinAshiCandle(heikinAshiCandle);
 
-			heikinAshiCandleService.addHeikinAshiCandle(heikinAshiCandle);
-
-			Double close = heikinAshiCandle.getClose();
-			Optional<Candle> optionalFirstCandle = candleService.findCandle(heikinAshiCandle.getContract(),
-					LocalDate.now());
-			Candle firstCandle = null;
-			// If First candle does not exists, it is the first heikin ashi candle for the
-			// day
-			if (optionalFirstCandle.isPresent()) {
-				firstCandle = optionalFirstCandle.get();
-			} else {
-				if (heikinAshiCandle.getTradeDateTime().toLocalDate().isEqual(LocalDate.now())) {
+				// First candle not exists and heikinAshiCandle date is equal to today's date
+				Optional<Candle> optionalFirstCandle = candleService.findCandle(heikinAshiCandle.getContract(),
+						LocalDate.now());
+				if (!optionalFirstCandle.isPresent()
+						&& LocalDate.now().isEqual(heikinAshiCandle.getTradeDateTime().toLocalDate())) {
 					Candle candle = new Candle();
 					candle.setContract(heikinAshiCandle.getContract());
 					candle.setTradeDate(heikinAshiCandle.getTradeDateTime().toLocalDate());
@@ -81,44 +81,105 @@ public class HeikinAshiCandleScheduler extends Utils {
 					candle.setHigh(heikinAshiCandle.getHigh());
 					candle.setLow(heikinAshiCandle.getLow());
 					candle.setClose(heikinAshiCandle.getClose());
-					candle = candleService.addCandle(candle);
-					firstCandle = candle;
+					candleService.addCandle(candle);
 				}
-			}
-			if (firstCandle != null) {
-				Candle currentNormalCandle = getCandle(response, 1);
 
-				if (LocalDateTime.now().getHour() < 22) {
-					Optional<Entry> optionalLastEntry = entryService.findLastEntry(contract);
-					if (close >= (firstCandle.getHigh() + TechTradingConstants.ENTRY_OFFSET)) {
-						if ((!optionalLastEntry.isPresent()) || (optionalLastEntry.isPresent()
-								&& Boolean.FALSE.equals(optionalLastEntry.get().getIsActive())
-								&& EntryType.SELL.equals(optionalLastEntry.get().getEntryType()))) {
+				optionalFirstCandle = candleService.findCandle(heikinAshiCandle.getContract(), LocalDate.now());
+				Double close = heikinAshiCandle.getClose();
+				if (optionalFirstCandle.isPresent()) {
 
-							Double entryValue = currentNormalCandle.getOpen();
-							Double exitValue = roundTwoDecimalPlaces(entryValue + PROFIT_OFFSET);
-							entries.add(createEntry(contract, EntryType.BUY, entryValue, exitValue));
+					Candle firstCandle = optionalFirstCandle.get();
 
-						}
-					} else if (close <= (firstCandle.getLow() - TechTradingConstants.ENTRY_OFFSET)) {
-						if ((!optionalLastEntry.isPresent()) || (optionalLastEntry.isPresent()
-								&& Boolean.FALSE.equals(optionalLastEntry.get().getIsActive())
-								&& EntryType.BUY.equals(optionalLastEntry.get().getEntryType()))) {
+					Candle currentNormalCandle = getKiteCandle(response, 1);
 
-							Double entryValue = currentNormalCandle.getOpen();
-							Double exitValue = roundTwoDecimalPlaces(entryValue - PROFIT_OFFSET);
-							entries.add(createEntry(contract, EntryType.SELL, entryValue, exitValue));
+					if (LocalDateTime.now().getHour() < 22) {
+						Optional<Entry> optionalLastEntry = entryService.findLastEntry(contract, LocalDate.now());
+						if (close >= (firstCandle.getHigh() + TechTradingConstants.ENTRY_OFFSET)) {
+							if ((!optionalLastEntry.isPresent()) || (optionalLastEntry.isPresent()
+									&& Boolean.FALSE.equals(optionalLastEntry.get().getIsActive())
+									&& EntryType.SELL.equals(optionalLastEntry.get().getEntryType()))) {
 
+								Double entryValue = currentNormalCandle.getOpen();
+								Double exitValue = roundTwoDecimalPlaces(entryValue + PROFIT_OFFSET);
+								entries.add(createEntry(contract, EntryType.BUY, entryValue, exitValue));
+
+							}
+						} else if (close <= (firstCandle.getLow() - TechTradingConstants.ENTRY_OFFSET)) {
+							if ((!optionalLastEntry.isPresent()) || (optionalLastEntry.isPresent()
+									&& Boolean.FALSE.equals(optionalLastEntry.get().getIsActive())
+									&& EntryType.BUY.equals(optionalLastEntry.get().getEntryType()))) {
+
+								Double entryValue = currentNormalCandle.getOpen();
+								Double exitValue = roundTwoDecimalPlaces(entryValue - PROFIT_OFFSET);
+								entries.add(createEntry(contract, EntryType.SELL, entryValue, exitValue));
+
+							}
 						}
 					}
 				}
-			}
+			} 
+
+			/*
+			 * Candle normalCandle = getCandle(response, 2); LocalDateTime
+			 * normalCandleDateTime = getLocalDateTimeFromResponse(response, 2);
+			 * 
+			 * HeikinAshiCandle previousHeikinAshiCandle =
+			 * heikinAshiCandleService.findLastHeikinAshiCandle(contract);
+			 * 
+			 * HeikinAshiCandle heikinAshiCandle =
+			 * getHeikinAshiCandle(previousHeikinAshiCandle, normalCandle);
+			 * heikinAshiCandle.setTradeDateTime(normalCandleDateTime);
+			 * 
+			 * heikinAshiCandleService.addHeikinAshiCandle(heikinAshiCandle);
+			 * 
+			 * Double close = heikinAshiCandle.getClose(); Optional<Candle>
+			 * optionalFirstCandle =
+			 * candleService.findCandle(heikinAshiCandle.getContract(), LocalDate.now());
+			 * Candle firstCandle = null; // If First candle does not exists, it is the
+			 * first heikin ashi candle for the // day if (optionalFirstCandle.isPresent())
+			 * { firstCandle = optionalFirstCandle.get(); } else { if
+			 * (heikinAshiCandle.getTradeDateTime().toLocalDate().isEqual(LocalDate.now()))
+			 * { Candle candle = new Candle();
+			 * candle.setContract(heikinAshiCandle.getContract());
+			 * candle.setTradeDate(heikinAshiCandle.getTradeDateTime().toLocalDate());
+			 * candle.setOpen(heikinAshiCandle.getOpen());
+			 * candle.setHigh(heikinAshiCandle.getHigh());
+			 * candle.setLow(heikinAshiCandle.getLow());
+			 * candle.setClose(heikinAshiCandle.getClose()); candle =
+			 * candleService.addCandle(candle); firstCandle = candle; } } if (firstCandle !=
+			 * null) { Candle currentNormalCandle = getCandle(response, 1);
+			 * 
+			 * if (LocalDateTime.now().getHour() < 22) { Optional<Entry> optionalLastEntry =
+			 * entryService.findLastEntry(contract, LocalDate.now()); if (close >=
+			 * (firstCandle.getHigh() + TechTradingConstants.ENTRY_OFFSET)) { if
+			 * ((!optionalLastEntry.isPresent()) || (optionalLastEntry.isPresent() &&
+			 * Boolean.FALSE.equals(optionalLastEntry.get().getIsActive()) &&
+			 * EntryType.SELL.equals(optionalLastEntry.get().getEntryType()))) {
+			 * 
+			 * Double entryValue = currentNormalCandle.getOpen(); Double exitValue =
+			 * roundTwoDecimalPlaces(entryValue + PROFIT_OFFSET);
+			 * entries.add(createEntry(contract, EntryType.BUY, entryValue, exitValue));
+			 * 
+			 * } } else if (close <= (firstCandle.getLow() -
+			 * TechTradingConstants.ENTRY_OFFSET)) { if ((!optionalLastEntry.isPresent()) ||
+			 * (optionalLastEntry.isPresent() &&
+			 * Boolean.FALSE.equals(optionalLastEntry.get().getIsActive()) &&
+			 * EntryType.BUY.equals(optionalLastEntry.get().getEntryType()))) {
+	b		 * 
+			 * Double entryValue = currentNormalCandle.getOpen(); Double exitValue =
+			 * roundTwoDecimalPlaces(entryValue - PROFIT_OFFSET);
+			 * entries.add(createEntry(contract, EntryType.SELL, entryValue, exitValue));
+			 * 
+			 * } } } }
+			 */
 
 		});
+		
 		if (!entries.isEmpty()) {
 			entryService.addEntry(entries);
 			sendEmail(entries);
 		}
+		
 
 	}
 
@@ -131,6 +192,7 @@ public class HeikinAshiCandleScheduler extends Utils {
 		entry.setExitValue(exitValue);
 		entry.setIsActive(Boolean.FALSE);
 		entry.setEntryType(entryType);
+		entry.setTradeDate(LocalDate.now());
 		return entryService.addEntry(entry);
 	}
 

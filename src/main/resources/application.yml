@@ -2,17 +2,11 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: gurubaladhinesh@gmail.com
-    password: amazon sde1
-    properties:
-      mail:
-        smtp:
-          starttls:
-            enabled: true
-          auth: true
+    username: noreply.techtrading@gmail.com
+    password: techtrading3#
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     database: POSTGRESQL
     show-sql: true

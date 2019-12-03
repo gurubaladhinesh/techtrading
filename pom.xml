@@ -10,8 +10,8 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.techguru.trading</groupId>
-	<artifactId>TechTrading</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>techtrading</artifactId>
+	<version>1.0</version>
 	<name>TechTrading</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -82,6 +82,18 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-websocket</artifactId>
+			<version>5.0.5.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.websocket</groupId>
+			<artifactId>javax.websocket-api</artifactId>
+			<version>1.1</version>
+			<scope>provided</scope>
+		</dependency>
+
 
 	</dependencies>
 

@@ -1,5 +1,6 @@
 package com.techguru.trading.service.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -49,9 +50,10 @@ public class EntryServiceImpl implements EntryService {
 	}
 
 	@Override
-	public Optional<Entry> findLastEntry(Contract contract) {
+	public Optional<Entry> findLastEntry(Contract contract, LocalDate date) {
 
-		return entryRepository.findFirstByContractIdEqualsOrderByCreatedAtDesc(contract.getId());
+		return entryRepository.findFirstByContractIdEqualsAndTradeDateEqualsOrderByCreatedAtDesc(contract.getId(),
+				date);
 
 	}
 

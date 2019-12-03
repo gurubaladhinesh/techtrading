@@ -30,7 +30,7 @@ public class EntryStatusScheduler extends Utils {
 		List<Entry> targetReachedEntries = new ArrayList<Entry>();
 		activeEntries.forEach((entry) -> {
 			JSONObject response = getInvestingApiResponse(entry.getContract());
-			Candle candle = getCandle(response, 1);
+			Candle candle = getKiteCandle(response, 1);
 
 			if ((EntryType.BUY.equals(entry.getEntryType()) && entry.getExitValue() <= candle.getClose())
 					|| (EntryType.SELL.equals(entry.getEntryType()) && entry.getExitValue() >= candle.getClose())) {

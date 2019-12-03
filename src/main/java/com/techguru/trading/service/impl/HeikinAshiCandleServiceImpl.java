@@ -1,8 +1,8 @@
 package com.techguru.trading.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-import org.hibernate.dialect.pagination.FirstLimitHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ import com.techguru.trading.service.HeikinAshiCandleService;
 public class HeikinAshiCandleServiceImpl implements HeikinAshiCandleService {
 
 	private HeikinAshiCandleRepository heikinAshiCandleRepository;
-	
+
 	@Autowired
 	private ContractRepository contractRepository;
 
@@ -27,11 +27,10 @@ public class HeikinAshiCandleServiceImpl implements HeikinAshiCandleService {
 
 	@Override
 	public HeikinAshiCandle addHeikinAshiCandle(HeikinAshiCandle heikinAshiCandle) {
-		
+
 		Contract contract = contractRepository.findById(heikinAshiCandle.getContract().getId()).orElseThrow();
 		heikinAshiCandle.setContract(contract);
 
-		
 		return heikinAshiCandleRepository.save(heikinAshiCandle);
 	}
 
@@ -43,6 +42,12 @@ public class HeikinAshiCandleServiceImpl implements HeikinAshiCandleService {
 	@Override
 	public HeikinAshiCandle findLastHeikinAshiCandle(Contract contract) {
 		return heikinAshiCandleRepository.findFirstByContractIdEqualsOrderByTradeDateTimeDesc(contract.getId());
+	}
+
+	@Override
+	public Boolean findIfHeikinAshiCandleExists(Contract contract, LocalDateTime dateTime) {
+		return heikinAshiCandleRepository.findFirstByContractIdEqualsAndTradeDateTimeEquals(contract.getId(), dateTime)
+				.isPresent();
 	}
 
 }
