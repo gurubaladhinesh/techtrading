@@ -24,7 +24,7 @@ public class SymbolServiceImpl implements SymbolService {
 
 	@Override
 	public Symbol addSymbol(Symbol symbol) {
-		SymbolType symbolType = symbolTypeRepository.findById(symbol.getSymbolType().getId().toUpperCase()).get();
+		SymbolType symbolType = (SymbolType)symbolTypeRepository.findById(symbol.getSymbolType().getId().toUpperCase()).orElseThrow();
 		symbol.setId(symbol.getId().toUpperCase());
 		symbol.setSymbolType(symbolType);
 		return symbolRepository.save(symbol);

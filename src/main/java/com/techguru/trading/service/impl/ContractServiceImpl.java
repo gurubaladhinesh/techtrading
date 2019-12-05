@@ -33,9 +33,9 @@ public class ContractServiceImpl implements ContractService {
 
 	@Override
 	public Contract addContract(Contract contract) {
-		Symbol symbol = symbolRepository.findById(contract.getSymbol().getId().toUpperCase()).get();
-		ContractType contractType = contractTypeRepository.findById(contract.getContractType().getId().toUpperCase())
-				.get();
+		Symbol symbol = (Symbol)symbolRepository.findById(contract.getSymbol().getId().toUpperCase()).orElseThrow();
+		ContractType contractType = (ContractType)contractTypeRepository.findById(contract.getContractType().getId().toUpperCase())
+				.orElseThrow();
 		contract.setSymbol(symbol);
 		contract.setContractType(contractType);
 		return contractRepository.save(contract);
