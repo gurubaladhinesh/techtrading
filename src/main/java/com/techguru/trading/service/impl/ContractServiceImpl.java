@@ -2,6 +2,7 @@ package com.techguru.trading.service.impl;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,9 +34,10 @@ public class ContractServiceImpl implements ContractService {
 
 	@Override
 	public Contract addContract(Contract contract) {
-		Symbol symbol = (Symbol)symbolRepository.findById(contract.getSymbol().getId().toUpperCase()).orElseThrow();
-		ContractType contractType = (ContractType)contractTypeRepository.findById(contract.getContractType().getId().toUpperCase())
-				.orElseThrow();
+		Symbol symbol = symbolRepository.findById(contract.getSymbol().getId().toUpperCase())
+				.orElseThrow(NoSuchElementException::new);
+		ContractType contractType = contractTypeRepository.findById(contract.getContractType().getId().toUpperCase())
+				.orElseThrow(NoSuchElementException::new);
 		contract.setSymbol(symbol);
 		contract.setContractType(contractType);
 		return contractRepository.save(contract);

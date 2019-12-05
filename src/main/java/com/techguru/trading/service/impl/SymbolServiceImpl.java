@@ -1,5 +1,7 @@
 package com.techguru.trading.service.impl;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +26,8 @@ public class SymbolServiceImpl implements SymbolService {
 
 	@Override
 	public Symbol addSymbol(Symbol symbol) {
-		SymbolType symbolType = (SymbolType)symbolTypeRepository.findById(symbol.getSymbolType().getId().toUpperCase()).orElseThrow();
+		SymbolType symbolType = symbolTypeRepository.findById(symbol.getSymbolType().getId().toUpperCase())
+				.orElseThrow(NoSuchElementException::new);
 		symbol.setId(symbol.getId().toUpperCase());
 		symbol.setSymbolType(symbolType);
 		return symbolRepository.save(symbol);

@@ -3,6 +3,7 @@ package com.techguru.trading.service.impl;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,8 @@ public class EntryServiceImpl implements EntryService {
 
 	@Override
 	public Entry addEntry(Entry entry) {
-		Contract contract = contractRepository.findById(entry.getContract().getId()).orElseThrow();
+		Contract contract = contractRepository.findById(entry.getContract().getId())
+				.orElseThrow(NoSuchElementException::new);
 		entry.setContract(contract);
 		entry.setCreatedAt(LocalDateTime.now());
 		entry.setProfitOffset(TechTradingConstants.PROFIT_OFFSET);
