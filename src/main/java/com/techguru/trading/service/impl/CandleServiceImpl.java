@@ -50,4 +50,9 @@ public class CandleServiceImpl implements CandleService {
 	public Optional<Candle> findCandle(Contract contract, LocalDate tradeDate) {
 		return candleRepository.findFirstByTradeDateEqualsAndContractIdEquals(tradeDate, contract.getId());
 	}
+
+	@Override
+	public List<Candle> findAllCandles() {
+		return candleRepository.findAll();
+	}
 }

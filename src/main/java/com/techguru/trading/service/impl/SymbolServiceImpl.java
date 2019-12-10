@@ -1,5 +1,6 @@
 package com.techguru.trading.service.impl;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,11 @@ public class SymbolServiceImpl implements SymbolService {
 		symbol.setId(symbol.getId().toUpperCase());
 		symbol.setSymbolType(symbolType);
 		return symbolRepository.save(symbol);
+	}
+
+	@Override
+	public List<Symbol> findAllSymbols() {
+		return symbolRepository.findAll();
 	}
 
 }

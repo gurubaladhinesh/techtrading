@@ -1,5 +1,7 @@
 package com.techguru.trading.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,11 @@ public class ContractTypeServiceImpl implements ContractTypeService {
 		contractType.setId(contractType.getId().toUpperCase());
 		return contractTypeRepository.save(contractType);
 
+	}
+
+	@Override
+	public List<ContractType> findAllContractTypes() {
+		return contractTypeRepository.findAll();
 	}
 
 }

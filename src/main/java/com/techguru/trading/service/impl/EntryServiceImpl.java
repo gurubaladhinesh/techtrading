@@ -64,4 +64,9 @@ public class EntryServiceImpl implements EntryService {
 		return entryRepository.findByIsActiveEquals(Boolean.TRUE);
 	}
 
+	@Override
+	public List<Entry> findAllEntries() {
+		return entryRepository.findAll();
+	}
+
 }

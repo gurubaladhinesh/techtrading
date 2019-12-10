@@ -16,4 +16,6 @@ public interface HeikinAshiCandleService {
 
 	public Boolean findIfHeikinAshiCandleExists(Contract contract, LocalDateTime dateTime);
 
+	public List<HeikinAshiCandle> findAllHeikinAshiCandles();
+
 }

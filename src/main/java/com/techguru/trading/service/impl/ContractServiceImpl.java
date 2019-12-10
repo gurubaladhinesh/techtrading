@@ -59,4 +59,9 @@ public class ContractServiceImpl implements ContractService {
 		return contractRepository.findByIsActiveEquals(Boolean.TRUE);
 	}
 
+	@Override
+	public List<Contract> findAllContracts() {
+		return contractRepository.findAll();
+	}
+
 }

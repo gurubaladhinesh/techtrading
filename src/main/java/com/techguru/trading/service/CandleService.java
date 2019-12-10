@@ -16,5 +16,7 @@ public interface CandleService {
 	public List<Candle> findCandles(LocalDate tradeDate);
 	
 	public Optional<Candle> findCandle(Contract contract, LocalDate tradeDate);
+	
+	public List<Candle> findAllCandles();
 
 }

@@ -1,5 +1,7 @@
 package com.techguru.trading.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,12 @@ public class ContractTypeController {
 	@PostMapping
 	public ResponseEntity<ContractType> addContractType(@RequestBody ContractType contractType) {
 		return new ResponseEntity<>(contractTypeService.addContractType(contractType), HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "Finds all contract types", notes = "Finds all contract types")
+	@PostMapping
+	public ResponseEntity<List<ContractType>> findAllContractTypes() {
+		return new ResponseEntity<>(contractTypeService.findAllContractTypes(), HttpStatus.OK);
 	}
 
 }

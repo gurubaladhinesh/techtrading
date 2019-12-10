@@ -1,8 +1,11 @@
 package com.techguru.trading.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +32,13 @@ public class HeikinAshiCandleController {
 	public ResponseEntity<HeikinAshiCandle> addCandle(@RequestBody HeikinAshiCandle candle) {
 
 		return new ResponseEntity<>(heikinAshiCandleService.addHeikinAshiCandle(candle), HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "Find all heikin ashi candles", notes = "Find all heikin ashi candles")
+	@GetMapping
+	public ResponseEntity<List<HeikinAshiCandle>> findAllHeikinAshiCandles() {
+
+		return new ResponseEntity<>(heikinAshiCandleService.findAllHeikinAshiCandles(), HttpStatus.OK);
 	}
 
 }

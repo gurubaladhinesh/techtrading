@@ -1,5 +1,7 @@
 package com.techguru.trading.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,11 @@ public class SymbolTypeServiceImpl implements SymbolTypeService {
 	public SymbolType addSymbolType(SymbolType symbolType) {
 		symbolType.setId(symbolType.getId().toUpperCase());
 		return symbolTypeRepository.save(symbolType);
+	}
+
+	@Override
+	public List<SymbolType> findAllSymbolTypes() {
+		return symbolTypeRepository.findAll();
 	}
 
 }

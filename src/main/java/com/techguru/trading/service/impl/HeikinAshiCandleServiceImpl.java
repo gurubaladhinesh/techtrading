@@ -50,4 +50,9 @@ public class HeikinAshiCandleServiceImpl implements HeikinAshiCandleService {
 				.isPresent();
 	}
 
+	@Override
+	public List<HeikinAshiCandle> findAllHeikinAshiCandles() {
+		return heikinAshiCandleRepository.findAll();
+	}
+
 }

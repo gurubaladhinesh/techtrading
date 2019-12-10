@@ -1,8 +1,11 @@
 package com.techguru.trading.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,5 +32,12 @@ public class ContractController {
 	public ResponseEntity<Contract> addSymbol(@RequestBody Contract contract) {
 
 		return new ResponseEntity<>(contractService.addContract(contract), HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "Finds all contracts", notes = "Finds all contracts")
+	@GetMapping
+	public ResponseEntity<List<Contract>> findAllContracts() {
+
+		return new ResponseEntity<>(contractService.findAllContracts(), HttpStatus.OK);
 	}
 }

@@ -17,7 +17,9 @@ public interface EntryService {
 	public Optional<Entry> findIfActiveEntryExists(Contract contract, EntryType entryType);
 
 	public Optional<Entry> findLastEntry(Contract contract, LocalDate date);
-	
+
 	public List<Entry> findActiveEntries();
+
+	public List<Entry> findAllEntries();
 
 }

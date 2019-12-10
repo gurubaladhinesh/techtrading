@@ -11,5 +11,7 @@ public interface ContractService {
 	public List<Contract> updateOpenContractStatus();
 	
 	public List<Contract> findActiveContracts();
+	
+	public List<Contract> findAllContracts();
 
 }
