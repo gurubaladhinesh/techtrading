@@ -11,9 +11,9 @@ spring:
     database: POSTGRESQL
     show-sql: true
   datasource:
-    url: jdbc:postgresql://localhost:54320/techtrading
-    username: user
-    password: passw0rd
+    #url: ${SPRING_DATASOURCE_URL}
+    #username: ${SPRING_DATASOURCE_USERNAME}
+    #password: ${SPRING_DATASOURCE_PASSWORD}
     platform: postgres
     initialization-mode: always
     driver-class-name: org.postgresql.Driver
