@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import com.techguru.trading.model.Contract;
 
-@Repository
 public interface ContractRepository extends JpaRepository<Contract, String> {
 	
 	public List<Contract> findByIsActiveEquals(Boolean isActive);

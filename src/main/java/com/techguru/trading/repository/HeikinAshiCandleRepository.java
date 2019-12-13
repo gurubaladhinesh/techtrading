@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import com.techguru.trading.model.HeikinAshiCandle;
 
-@Repository
 public interface HeikinAshiCandleRepository extends JpaRepository<HeikinAshiCandle, Long> {
 
 	public HeikinAshiCandle findFirstByContractIdEqualsOrderByTradeDateTimeDesc(String contractId);

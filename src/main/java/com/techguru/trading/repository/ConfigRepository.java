@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 
 import com.techguru.trading.model.Config;
 
-@Repository
 public interface ConfigRepository extends JpaRepository<Config, String> {
 
 }
