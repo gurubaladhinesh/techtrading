@@ -9,8 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-@EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class })
-@ComponentScan("com.techguru.trading")
+@EnableAutoConfiguration
 public class TechTradingApplication {
 
 	public static void main(String[] args) {
