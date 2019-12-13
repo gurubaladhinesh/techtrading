@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import com.techguru.trading.model.Symbol;
 
+@Repository
 public interface SymbolRepository  extends JpaRepository<Symbol, String>{
 
 }

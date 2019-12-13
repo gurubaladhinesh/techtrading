@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import com.techguru.trading.model.ContractType;
 
+@Repository
 public interface ContractTypeRepository extends JpaRepository<ContractType, String>{
 
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.techguru.trading.model.Candle;
 
+@Repository
 public interface CandleRepository extends JpaRepository<Candle, Long> {
 
 	public Optional<Candle> findFirstByTradeDateEqualsAndContractIdEquals(LocalDate tradeDate, String contractId);
