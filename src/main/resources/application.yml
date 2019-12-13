@@ -7,15 +7,22 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    database: POSTGRESQL
+    #database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database-platform: org.hibernate.dialect.H2Dialect
+    #database: POSTGRESQL
     show-sql: true
   datasource:
-    #url: ${SPRING_DATASOURCE_URL}
-    #username: ${SPRING_DATASOURCE_USERNAME}
-    #password: ${SPRING_DATASOURCE_PASSWORD}
-    platform: postgres
+    #url: jdbc:postgresql://localhost:54320/techtrading
+    url: jdbc:h2:mem:techtrading
+    username: user
+    password: passw0rd
+    #platform: postgres
     initialization-mode: always
-    driver-class-name: org.postgresql.Driver
+    #driver-class-name: org.postgresql.Driver
+    driver-class-name: org.h2.Driver
   application:
     name: techtrading
+  h2: 
+    console:
+      enabled: true
+      path: /h2-console
