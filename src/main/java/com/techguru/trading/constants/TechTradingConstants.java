@@ -23,4 +23,6 @@ public interface TechTradingConstants {
 
 	public static final String KITE_API_URL = "https://kitecharts-aws.zerodha.com/api/chart/@#$%kiteChartId%$#@/15minute?from="
 			+ LocalDate.now().minusWeeks(1) + "&to=" + LocalDate.now();
+	
+	public static final Double STOPLOSS_OFFSET = 0.2;
 }
