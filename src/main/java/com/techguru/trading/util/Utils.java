@@ -81,7 +81,6 @@ public class Utils implements TechTradingConstants {
 			con.setRequestProperty("User-Agent", "Mozilla/5.0");
 			if (HttpURLConnection.HTTP_OK == con.getResponseCode()) {
 				response = readResponse(con);
-				System.out.println("response::" + response);
 			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -145,7 +144,7 @@ public class Utils implements TechTradingConstants {
 
 		entries.forEach((entry) -> {
 			msg.setSubject(entry.getContract().getId() + " - " + entry.getEntryType() + " - Entry:"
-					+ entry.getEntryValue() + ", Exit: " + entry.getExitValue());
+					+ entry.getEntryValue() + ", Exit: " + entry.getExitValue() + ", StopLoss: " + entry.getStopLoss());
 			msg.setText("Happy Trading");
 			javaMailSender.send(msg);
 		});

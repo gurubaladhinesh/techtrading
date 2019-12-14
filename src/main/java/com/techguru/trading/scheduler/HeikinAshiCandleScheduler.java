@@ -101,7 +101,8 @@ public class HeikinAshiCandleScheduler extends Utils {
 
 								Double entryValue = currentNormalCandle.getOpen();
 								Double exitValue = roundTwoDecimalPlaces(entryValue + PROFIT_OFFSET);
-								entries.add(createEntry(contract, EntryType.BUY, entryValue, exitValue));
+								Double stopLoss = firstCandle.getLow() - STOPLOSS_OFFSET;
+								entries.add(createEntry(contract, EntryType.BUY, entryValue, exitValue, stopLoss));
 
 							}
 						} else if (close <= (firstCandle.getLow() - TechTradingConstants.ENTRY_OFFSET)) {
@@ -111,7 +112,8 @@ public class HeikinAshiCandleScheduler extends Utils {
 
 								Double entryValue = currentNormalCandle.getOpen();
 								Double exitValue = roundTwoDecimalPlaces(entryValue - PROFIT_OFFSET);
-								entries.add(createEntry(contract, EntryType.SELL, entryValue, exitValue));
+								Double stopLoss = firstCandle.getHigh() + STOPLOSS_OFFSET;
+								entries.add(createEntry(contract, EntryType.SELL, entryValue, exitValue, stopLoss));
 
 							}
 						}
@@ -127,7 +129,8 @@ public class HeikinAshiCandleScheduler extends Utils {
 
 	}
 
-	private Entry createEntry(Contract contract, EntryType entryType, Double entryValue, Double exitValue) {
+	private Entry createEntry(Contract contract, EntryType entryType, Double entryValue, Double exitValue,
+			Double stopLoss) {
 		Entry entry = new Entry();
 		entry.setContract(contract);
 		entry.setCreatedAt(LocalDateTime.now());
@@ -137,6 +140,7 @@ public class HeikinAshiCandleScheduler extends Utils {
 		entry.setIsActive(Boolean.FALSE);
 		entry.setEntryType(entryType);
 		entry.setTradeDate(LocalDate.now());
+		entry.setStopLoss(stopLoss);
 		return entryService.addEntry(entry);
 	}
 

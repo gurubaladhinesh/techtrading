@@ -77,4 +77,7 @@ public class Entry {
 	@JsonFormat(pattern = TechTradingConstants.DATE_FORMAT)
 	private LocalDate tradeDate;
 
+	@Column(name = "stop_loss")
+	private Double stopLoss;
+
 }
