@@ -12,11 +12,11 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-@Configuration
+/*@Configuration
 @EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class })
 @ComponentScan
 @EntityScan
-@EnableJpaRepositories
+@EnableJpaRepositories*/
 public class TechTradingApplication {
 
 	public static void main(String[] args) {
