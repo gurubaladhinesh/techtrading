@@ -10,12 +10,12 @@ import com.techguru.trading.model.Contract;
 public interface CandleService {
 
 	public Candle addCandle(Candle candle);
-
-	public Boolean findIfCandleExists(Contract contract, LocalDate tradeDate);
-
-	public List<Candle> findCandles(LocalDate tradeDate);
 	
-	public Optional<Candle> findCandle(Contract contract, LocalDate tradeDate);
+	public Optional<Candle> findFirstCandle(Contract contract, LocalDate tradeDate);
+
+	public Optional<Candle> findLastCandle(Contract contract, LocalDate tradeDate);
+
+	public Optional<Candle> findLastCandle(Contract contract);
 	
 	public List<Candle> findAllCandles();
 

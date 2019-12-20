@@ -1,5 +1,8 @@
 package com.techguru.trading.service.impl;
 
+import com.techguru.trading.model.Candle.CandlePosition;
+import com.techguru.trading.model.Entry;
+import com.techguru.trading.model.Entry.EntryType;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -37,18 +40,20 @@ public class CandleServiceImpl implements CandleService {
 	}
 
 	@Override
-	public Boolean findIfCandleExists(Contract contract, LocalDate tradeDate) {
-		return candleRepository.findFirstByTradeDateEqualsAndContractIdEquals(tradeDate, contract.getId()).isPresent();
+	public Optional<Candle> findFirstCandle(Contract contract, LocalDate tradeDate) {
+		return candleRepository.findFirstByTradeDateEqualsAndContractIdEqualsAndCandlePositionEquals(tradeDate, contract.getId(),
+				CandlePosition.FIRST);
 	}
 
 	@Override
-	public List<Candle> findCandles(LocalDate tradeDate) {
-		return candleRepository.findByTradeDateEquals(tradeDate);
+	public Optional<Candle> findLastCandle(Contract contract, LocalDate tradeDate) {
+		return candleRepository.findFirstByTradeDateEqualsAndContractIdEqualsAndCandlePositionEquals(tradeDate, contract.getId(),
+				CandlePosition.LAST);
 	}
 
 	@Override
-	public Optional<Candle> findCandle(Contract contract, LocalDate tradeDate) {
-		return candleRepository.findFirstByTradeDateEqualsAndContractIdEquals(tradeDate, contract.getId());
+	public Optional<Candle> findLastCandle(Contract contract) {
+		return candleRepository.findFirstByContractIdEqualsOrderByTradeDateDesc(contract.getId());
 	}
 
 	@Override

@@ -44,17 +44,6 @@ public class ContractServiceImpl implements ContractService {
 	}
 
 	@Override
-	public List<Contract> updateOpenContractStatus() {
-		List<Contract> expiredContracts = contractRepository.findByIsActiveEqualsAndEndDateLessThan(Boolean.TRUE,
-				LocalDate.now());
-		expiredContracts.stream().forEach((contract) -> {
-			contract.setIsActive(Boolean.FALSE);
-		});
-
-		return contractRepository.saveAll(expiredContracts);
-	}
-
-	@Override
 	public List<Contract> findActiveContracts() {
 		return contractRepository.findByIsActiveEquals(Boolean.TRUE);
 	}

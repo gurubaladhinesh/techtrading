@@ -1,21 +1,21 @@
 package com.techguru.trading.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.techguru.trading.constants.TechTradingConstants;
 import java.time.LocalDate;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.techguru.trading.constants.TechTradingConstants;
-
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -27,38 +27,44 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "candle")
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Builder
 public class Candle {
 
-	@Id
-	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+  public enum CandlePosition {
+    FIRST, LAST;
+  }
 
-	@ManyToOne
-	@JoinColumn(name = "contract", referencedColumnName = "id")
-	@NonNull
-	private Contract contract;
+  @Id
+  @Column(name = "id")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-	@NonNull
-	@Column(name = "trade_date")
-	@JsonFormat(pattern=TechTradingConstants.DATE_FORMAT)
-	private LocalDate tradeDate;
-	
-	@Column(name = "open")
-	@NonNull
-	private Double open;
+  @ManyToOne
+  @JoinColumn(name = "contract", referencedColumnName = "id")
+  @NonNull
+  private Contract contract;
 
-	@Column(name = "high")
-	@NonNull
-	private Double high;
+  @NonNull
+  @Column(name = "trade_date")
+  @JsonFormat(pattern = TechTradingConstants.DATE_FORMAT)
+  private LocalDate tradeDate;
 
-	@Column(name = "low")
-	@NonNull
-	private Double low;
-	
-	@Column(name = "close")
-	@NonNull
-	private Double close;
+  @Column(name = "open")
+  private Double open;
+
+  @Column(name = "high")
+  private Double high;
+
+  @Column(name = "low")
+  private Double low;
+
+  @Column(name = "close")
+  private Double close;
+
+  @Column(name = "candle_position")
+  @NonNull
+  @Enumerated(EnumType.STRING)
+  private Candle.CandlePosition candlePosition;
 
 }

@@ -57,20 +57,10 @@ public class Contract {
 
 	@Column(name = "is_active", columnDefinition = "boolean default true")
 	private Boolean isActive;
-
-	//Investing.com related 
-	@Column(name = "pair_id")
-	private String pairId;
-
-	//Investing.com related
-	@Column(name = "referer_url")
-	private String refererUrl;
 	
 	//Kite related
 	@NonNull
 	@Column(name="kite_chart_id")
 	private String kiteChartId;
-	
-	
 
 }

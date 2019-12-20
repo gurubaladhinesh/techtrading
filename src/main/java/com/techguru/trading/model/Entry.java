@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.techguru.trading.constants.TechTradingConstants;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -31,6 +32,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Table(name = "entry")
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+@Builder
 public class Entry {
 
 	public enum EntryType {
