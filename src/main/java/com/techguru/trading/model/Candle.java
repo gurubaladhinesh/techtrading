@@ -42,7 +42,6 @@ public class Candle {
 
   @ManyToOne
   @JoinColumn(name = "contract", referencedColumnName = "id")
-  @NonNull
   private Contract contract;
 
   @NonNull
@@ -63,7 +62,6 @@ public class Candle {
   private Double close;
 
   @Column(name = "candle_position")
-  @NonNull
   @Enumerated(EnumType.STRING)
   private Candle.CandlePosition candlePosition;
 

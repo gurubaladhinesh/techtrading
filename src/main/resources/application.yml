@@ -4,6 +4,14 @@ spring:
     port: 587
     username: noreply.techtrading@gmail.com
     password: techtrading3#
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   jpa:
     hibernate:
       ddl-auto: create

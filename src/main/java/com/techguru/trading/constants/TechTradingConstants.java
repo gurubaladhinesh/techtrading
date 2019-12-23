@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public interface TechTradingConstants {
 
-	public static final Double PROFIT_OFFSET = 0.5;
+	public static final Double PROFIT_OFFSET = 0.7;
 
 	public static final String DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm";
 

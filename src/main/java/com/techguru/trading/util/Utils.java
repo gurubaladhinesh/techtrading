@@ -2,6 +2,7 @@ package com.techguru.trading.util;
 
 import com.techguru.trading.constants.TechTradingConstants;
 import com.techguru.trading.model.Candle;
+import com.techguru.trading.model.Contract;
 import com.techguru.trading.model.Entry;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,12 +28,6 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class Utils implements TechTradingConstants {
-
-  @Autowired
-  private static JavaMailSender javaMailSender;
-
-  @Value("${spring.mail.username}")
-  private static String toAddress;
 
   public static JSONObject getApiResponse(String apiUrl) {
     log.info("API url: {}", apiUrl);
@@ -67,23 +62,6 @@ public class Utils implements TechTradingConstants {
     return response.toString();
   }
 
-  // send email
-  public static void sendEmail(List<Entry> entries) {
-    SimpleMailMessage msg = new SimpleMailMessage();
-
-    msg.setTo(toAddress);
-    msg.setBcc(BCC_ADDRESS);
-
-    entries.forEach((entry) -> {
-      msg.setSubject(entry.getContract().getId() + " - " + entry.getEntryType() + " - Entry:"
-          + entry.getEntryValue() + ", Exit: " + entry.getExitValue() + ", StopLoss: " + entry
-          .getStopLoss());
-      msg.setText("Happy Trading");
-      javaMailSender.send(msg);
-    });
-
-  }
-
   public static LocalDateTime getDateTime(String dateTime) {
     String pattern = "yyyy-MM-dd'T'HH:mm:ssZ";
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
@@ -96,6 +74,17 @@ public class Utils implements TechTradingConstants {
     JSONArray candles = data.getJSONArray("candles");
     JSONArray candle = candles.getJSONArray(candles.length() - candlePositionFromLast);
 
+    LocalDateTime dateTime = getDateTime(candle.getString(0));
+    Double open = candle.getDouble(1);
+    Double high = candle.getDouble(2);
+    Double low = candle.getDouble(3);
+    Double close = candle.getDouble(4);
+
+    return Candle.builder().tradeDate(dateTime.toLocalDate()).open(open).high(high).low(low)
+        .close(close).build();
+  }
+
+  public static Candle getKiteCandle(JSONArray candle){
     LocalDateTime dateTime = getDateTime(candle.getString(0));
     Double open = candle.getDouble(1);
     Double high = candle.getDouble(2);

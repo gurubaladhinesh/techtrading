@@ -66,7 +66,6 @@ public class Entry {
 	private Double exitValue;
 
 	@Column(name = "profit_offset")
-	@NonNull
 	private Double profitOffset;
 
 	@Column(name = "entry_type")
