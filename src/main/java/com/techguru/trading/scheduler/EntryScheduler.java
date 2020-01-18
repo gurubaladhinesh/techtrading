@@ -14,6 +14,7 @@ import com.techguru.trading.service.CandleService;
 import com.techguru.trading.service.ContractService;
 import com.techguru.trading.service.EntryService;
 import com.techguru.trading.util.Utils;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -57,17 +58,28 @@ public class EntryScheduler {
   @Scheduled(cron = "2 0,15,30,45 9-21 ? * MON-FRI")
   public void checkEntry() {
 
+    LocalDateTime localDateTime = LocalDateTime.now();
+
+    //No entries on Thursday after 5pm
+    if (DayOfWeek.THURSDAY.equals(localDateTime.getDayOfWeek()) && localDateTime.getHour() > 16) {
+      return;
+    }
+
     List<Contract> activeContracts = contractService.findActiveContracts();
     List<Entry> entries = new ArrayList<Entry>();
     activeContracts.forEach((contract) -> {
 
       String apiUrl = KITE_API_URL.replace("@#$%kiteChartId%$#@", contract.getKiteChartId())
           .replace("@#$%from%$#@",
-              LocalDate.now().minusWeeks(1).toString()).replace("@#$%to%$#@",
+              LocalDate.now().toString()).replace("@#$%to%$#@",
               LocalDate.now().toString());
       JSONObject response = Utils.getApiResponse(apiUrl);
 
       Candle candle = Utils.getKiteCandle(response, 2);
+
+      if (candle == null) {
+        return;
+      }
 
       Optional<Candle> optionalFirstCandle = candleService
           .findFirstCandle(contract, LocalDate.now());
@@ -101,14 +113,13 @@ public class EntryScheduler {
       Double buyClose = Utils.floorTwoDecimals(average);
       Double sellClose = Utils.roundTwoDecimals(average);
 
-      log.info("Buy close: {}, Sell close: {}", buyClose, sellClose);
+      log.info("Average: {}, Buy close: {}, Sell close: {}", average, buyClose, sellClose);
 
       Optional<Entry> optionalLastEntry = entryService.findLastEntry(contract, LocalDate.now());
 
       Candle liveCandle = Utils.getKiteCandle(response, 1);
 
       if (buyClose >= (firstCandle.getHigh() + TechTradingConstants.ENTRY_OFFSET)) {
-
         if ((!optionalLastEntry.isPresent()) || (optionalLastEntry.isPresent()
             && EntryType.SELL.equals(optionalLastEntry.get().getEntryType()))) {
           Double entryValue = liveCandle.getOpen();

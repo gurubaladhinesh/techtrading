@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.HtmlUtils;
 
 @Component
 @Slf4j
@@ -72,6 +73,10 @@ public class Utils implements TechTradingConstants {
   public static Candle getKiteCandle(JSONObject response, int candlePositionFromLast) {
     JSONObject data = response.getJSONObject("data");
     JSONArray candles = data.getJSONArray("candles");
+    if(candles.length()<2){
+      return null;
+    }
+
     JSONArray candle = candles.getJSONArray(candles.length() - candlePositionFromLast);
 
     LocalDateTime dateTime = getDateTime(candle.getString(0));

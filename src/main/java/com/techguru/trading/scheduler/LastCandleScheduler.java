@@ -10,6 +10,7 @@ import com.techguru.trading.util.Utils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.DoubleStream;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,7 +29,7 @@ public class LastCandleScheduler {
     this.contractService = contractService;
   }
 
-  @Scheduled(cron = "0 0 2 ? * TUE-SAT")
+  @Scheduled(cron = "0 0 1 ? * TUE-SAT")
   public void addLastHeikinAshiCandle() {
 
     List<Contract> activeContracts = contractService.findActiveContracts();
@@ -37,44 +38,50 @@ public class LastCandleScheduler {
 
     activeContracts.forEach((contract) -> {
 
-      Candle prevCandle = candleService.findLastCandle(contract).orElseThrow();
+          Optional<Candle> optionalCandle = candleService.findFirstCandle(contract, date);
 
-      Double prevHAOpen = prevCandle.getOpen();
-      Double prevHAClose = prevCandle.getClose();
+          if (optionalCandle.isPresent()) {
 
-      Double HAOpen = Double.valueOf(0.0);
-      Double HAClose = Double.valueOf(0.0);
+            Candle prevCandle = candleService.findLastCandle(contract).orElseThrow();
 
-      String apiUrl =
-          TechTradingConstants.KITE_API_URL
-              .replace("@#$%kiteChartId%$#@", contract.getKiteChartId())
-              .replace("@#$%from%$#@",
-                  date.toString()).replace("@#$%to%$#@",
-              date.toString());
+            Double prevHAOpen = prevCandle.getOpen();
+            Double prevHAClose = prevCandle.getClose();
 
-      JSONObject responseJson = Utils.getApiResponse(apiUrl);
-      JSONObject data = responseJson.getJSONObject("data");
-      JSONArray candles = data.getJSONArray("candles");
+            Double HAOpen = Double.valueOf(0.0);
+            Double HAClose = Double.valueOf(0.0);
 
-      for (int i = 0; i < candles.length(); i++) {
-        JSONArray candle = candles.getJSONArray(i);
+            String apiUrl =
+                TechTradingConstants.KITE_API_URL
+                    .replace("@#$%kiteChartId%$#@", contract.getKiteChartId())
+                    .replace("@#$%from%$#@",
+                        date.toString()).replace("@#$%to%$#@",
+                    date.toString());
 
-        LocalDateTime dateTime = Utils.getDateTime(candle.getString(0));
-        Double open = candle.getDouble(1);
-        Double high = candle.getDouble(2);
-        Double low = candle.getDouble(3);
-        Double close = candle.getDouble(4);
+            JSONObject responseJson = Utils.getApiResponse(apiUrl);
+            JSONObject data = responseJson.getJSONObject("data");
+            JSONArray candles = data.getJSONArray("candles");
 
-        HAOpen = DoubleStream.of(prevHAOpen, prevHAClose).average().getAsDouble();
-        HAClose = DoubleStream.of(open, high, low, close).average().getAsDouble();
+            for (int i = 0; i < candles.length(); i++) {
+              JSONArray candle = candles.getJSONArray(i);
 
-        prevHAOpen = HAOpen;
-        prevHAClose = HAClose;
-      }
-      Candle candle = Candle.builder().candlePosition(CandlePosition.LAST).tradeDate(date)
-          .contract(contract).open(Utils.roundTwoDecimals(HAOpen))
-          .close(Utils.roundTwoDecimals(HAClose)).build();
-      candleService.addCandle(candle);
-    });
+              LocalDateTime dateTime = Utils.getDateTime(candle.getString(0));
+              Double open = candle.getDouble(1);
+              Double high = candle.getDouble(2);
+              Double low = candle.getDouble(3);
+              Double close = candle.getDouble(4);
+
+              HAOpen = DoubleStream.of(prevHAOpen, prevHAClose).average().getAsDouble();
+              HAClose = DoubleStream.of(open, high, low, close).average().getAsDouble();
+
+              prevHAOpen = HAOpen;
+              prevHAClose = HAClose;
+            }
+            Candle candle = Candle.builder().candlePosition(CandlePosition.LAST).tradeDate(date)
+                .contract(contract).open(Utils.roundTwoDecimals(HAOpen))
+                .close(Utils.roundTwoDecimals(HAClose)).build();
+            candleService.addCandle(candle);
+          }
+        }
+    );
   }
 }
